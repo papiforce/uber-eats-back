@@ -6,7 +6,7 @@ const { logDisplayer } = require("../utils");
 
 /**
  * POST - Sign up
- * @param { username: string, email: string, password: string }
+ * @param { firstname: string, lastname: string, address: string, email: string, password: string }
  *
  * @return { success: boolean }
  */
@@ -14,8 +14,6 @@ const { logDisplayer } = require("../utils");
 const signUp = async (req, res) => {
   try {
     const { firstname, lastname, email, password, address } = req.body;
-
-    console.log(req.body, ` <== req.body`);
 
     const userByEmail = await UserModel.findOne({ email });
 

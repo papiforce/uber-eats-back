@@ -4,13 +4,13 @@ const { logDisplayer } = require("../utils");
 const isAdmin = (req, res, next) => {
   try {
     if (!req.user.roles.includes("ADMIN")) {
-      return res.status(403).json({ error: "Vous n'êtes pas administrateur" });
+      return res.status(401).json({ error: "Vous n'êtes pas administrateur" });
     }
 
     next();
   } catch (error) {
     logDisplayer("ERROR", error);
-    return res.status(403).json({ error: "Vous n'êtes pas administrateur" });
+    return res.status(401).json({ error: "Vous n'êtes pas administrateur" });
   }
 };
 
