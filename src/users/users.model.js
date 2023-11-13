@@ -13,7 +13,7 @@ const userSchema = new Schema({
     trim: true,
   },
   address: {
-    type: String,
+    type: { address: String, coordonates: { lat: Number, long: Number } },
     required: true,
     trim: true,
   },
@@ -34,8 +34,8 @@ const userSchema = new Schema({
     required: true,
     select: false,
   },
-  roles: {
-    type: [String],
+  role: {
+    type: String,
     required: true,
     enum: ["MEMBER", "DELIVERY_PERSON", "ADMIN"],
     default: "MEMBER",

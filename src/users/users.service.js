@@ -1,12 +1,10 @@
 const UserModel = require("./users.model");
 const { logDisplayer } = require("../utils");
-const crypto = require("crypto");
-const bcrypt = require("bcryptjs");
 
 /**
  * GET - Users list
  * @queryParam { 
-    id?: number
+    id?: ObjectId
     onlyActive?: "true"
     search?: string 
     withoutFounder?: boolean
