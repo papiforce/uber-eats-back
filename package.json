@@ -5,7 +5,8 @@
   "license": "MIT",
   "scripts": {
     "start": "node index.js",
-    "dev": "nodemon index.js | ./node_modules/.bin/pino-pretty --translateTime --colorize"
+    "dev": "nodemon index.js | ./node_modules/.bin/pino-pretty --translateTime --colorize",
+    "dev-win": "nodemon index.js | .\\node_modules\\.bin\\pino-pretty --translateTime --colorize"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
