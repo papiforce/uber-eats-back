@@ -95,7 +95,34 @@ const create = async (req, res) => {
 };
 
 /**
- * PUT - accept order
+ * PUT - cancel order
+ * @return { success: boolean }
+ */
+
+const cancel = async (req, res) => {
+  try {
+    const order = await OrderModel.findById(req.params.orderId);
+
+    if (!order.customerId.equals(req.user._id))
+      return res
+        .status(401)
+        .json({ error: "Vous n'êtes pas autorisé à effectuer cette action" });
+
+    const updatedOrder = Object.assign(order, { status: "CANCELED" });
+
+    await updatedOrder.save();
+
+    logDisplayer("INFO", `GET - ${req.originalUrl} : 200`);
+
+    return res.json({ success: true });
+  } catch (error) {
+    logDisplayer("ERROR", error);
+    return res.status(500).send(error);
+  }
+};
+
+/**
+ * PUT - update order status (delivery person)
  * @return { success: boolean }
  */
 
@@ -109,12 +136,8 @@ const updateStatusDelivery = async (req, res) => {
         .status(401)
         .json({ error: "Vous n'êtes pas autorisé à effectuer cette action" });
 
-    if (status === "DELIVERED") {
-      const orderCode = await OrderModel.findById(req.params.orderId);
-
-      if (orderCode.code !== code)
-        return res.status(404).json({ error: "Le code n'est pas bon" });
-    }
+    if (status === "DELIVERED" && order.code !== code)
+      return res.status(404).json({ error: "Le code n'est pas bon" });
 
     const updatedOrder = Object.assign(order, {
       deliveryPersonId: req.user._id,
@@ -133,7 +156,7 @@ const updateStatusDelivery = async (req, res) => {
 };
 
 /**
- * PUT - order ready
+ * PUT - update status (admin)
  * @return { success: boolean }
  */
 
@@ -162,15 +185,5 @@ module.exports = {
   create,
   updateStatusDelivery,
   updateStatusAdmin,
+  cancel,
 };
-
-// TEST FUNNEL ORDER - CREATE ORDER
-// {
-//   "content": [{ "name": "Spaghetti Bolognese", "price": 10.99, "photo": "https://supervalu.ie/thumbnail/800x600/var/files/real-food/recipes/Uploaded-2020/spaghetti-bolognese-recipe.jpg",
-//     "quantity": 2 }, { "name": "Spaghetti Pas Bolognese", "price": 7.99, "photo": "https://supervalu.ie/thumbnail/800x600/var/files/real-food/recipes/Uploaded-2020/spaghetti-bolognese-recipe.jpg",
-//     "quantity": 1 }
-//   ],
-//   "totalPrice": 29.97
-// }
-
-// TEST FUNNEL ORDER - UPDATE STATUS ORDER (DELIVERY)

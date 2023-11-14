@@ -3,7 +3,7 @@ const { logDisplayer } = require("../utils");
 const hasRole = (role) => {
   return (req, res, next) => {
     try {
-      if (req.user.role !== role) {
+      if (!role.includes(req.user.role)) {
         return res
           .status(401)
           .json({ error: "Vous n'êtes pas autorisé à effectuer cette action" });
