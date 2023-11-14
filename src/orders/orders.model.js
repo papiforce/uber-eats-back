@@ -13,11 +13,9 @@ const orderSchema = new Schema(
       required: true,
     },
     deliveryPersonId: {
-      userId: {
-        type: mongoose.Types.ObjectId,
-        ref: "User",
-        required: false,
-      },
+      type: mongoose.Types.ObjectId,
+      ref: "User",
+      required: false,
     },
     content: {
       type: [
@@ -48,7 +46,7 @@ const orderSchema = new Schema(
       required: true,
     },
     code: {
-      type: Number,
+      type: String,
       required: false,
     },
   },

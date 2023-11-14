@@ -1,7 +1,7 @@
 const isLogged = require("./isLogged");
-const isAdmin = require("./isAdmin");
+const hasRole = require("./hasRole");
 
 module.exports = {
   isLogged,
-  isAdmin,
+  hasRole,
 };
