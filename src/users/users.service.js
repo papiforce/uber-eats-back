@@ -58,6 +58,12 @@ const get = async (req, res) => {
 
 const updateUserProfile = async (req, res) => {
   try {
+    console.log(req.user._id.equals(req.params.userId));
+    if (!req.user._id.equals(req.params.userId) && req.user.role !== "ADMIN")
+      return res
+        .status(401)
+        .json({ error: "Vous n'êtes pas autorisé à effectuer cette action" });
+
     const user = await UserModel.findById(req.params.userId);
 
     if (!user)
@@ -65,11 +71,14 @@ const updateUserProfile = async (req, res) => {
 
     const checkEmail = await UserModel.findOne({ email: user.email });
 
-    if (checkEmail) {
-      return res.statsu(403).json({ error: "Cette email est déjà utilisée" });
+    if (checkEmail && req.user.email !== user.email) {
+      return res.status(403).json({ error: "Cette email est déjà utilisée" });
     }
 
-    const updatedUser = Object.assign(user, req.body);
+    const updatedUser = Object.assign(user, {
+      ...req.body,
+      role: req.user.role === "ADMIN" ? req.body.role : user.role,
+    });
 
     await updatedUser.save();
 
