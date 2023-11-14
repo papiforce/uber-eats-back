@@ -58,7 +58,6 @@ const get = async (req, res) => {
 
 const updateUserProfile = async (req, res) => {
   try {
-    console.log(req.user._id.equals(req.params.userId));
     if (!req.user._id.equals(req.params.userId) && req.user.role !== "ADMIN")
       return res
         .status(401)
