@@ -7,6 +7,8 @@ const { logDisplayer } = require("../utils");
     customerId?: ObjectId
     deliveryPersonId?: ObjectId
     status?: "FREE" | "ORDER_PREPARATION" | "READY" | "PENDING_DELIVERY" | "DELIVERED"
+    limit?: Number
+    page?: Number
   }
  *
  * @return Orders[] | []
@@ -19,10 +21,8 @@ const get = async (req, res) => {
       deliveryPersonId,
       status,
       limit = 10,
-      page,
+      page = 1,
     } = req.query;
-
-    console.log("USER => ", req.user);
 
     if (req.user.role === "MEMBER") {
       const orders = await OrderModel.find({
