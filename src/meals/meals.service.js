@@ -95,7 +95,7 @@ const updateMeal = async (req, res) => {
 
 const remove = async (req, res) => {
   try {
-    const meal = await MealModel.findOneAndDelete(req.params.mealId);
+    const meal = await MealModel.findByIdAndDelete(req.params.mealId);
 
     if (!meal)
       return res.status(404).json({ error: "Ce produit n'existe pas" });
