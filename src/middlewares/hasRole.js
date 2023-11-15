@@ -12,7 +12,9 @@ const hasRole = (role) => {
       next();
     } catch (error) {
       logDisplayer("ERROR", error);
-      return res.status(401).json({ error: "Vous n'êtes pas livreur" });
+      return res
+        .status(401)
+        .json({ error: "Vous n'êtes pas autorisé à effectuer cette action" });
     }
   };
 };

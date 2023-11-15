@@ -1,5 +1,4 @@
-const axios = require('axios');
-const crypto = require("crypto");
+const axios = require("axios");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const UserModel = require("../users/users.model");
@@ -27,14 +26,16 @@ const signUp = async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     encryptedPassword = await bcrypt.hash(password, salt);
 
-    const getcoordinates = await axios.get('https://api-adresse.data.gouv.fr/search/' ,
-    {
-      params: {
-        q:address.address,
+    const getcoordinates = await axios.get(
+      "https://api-adresse.data.gouv.fr/search/",
+      {
+        params: {
+          q: address.address,
+        },
       }
-    });
+    );
 
-    const coordinates = getcoordinates.data.features[0].geometry.coordinates
+    const coordinates = getcoordinates.data.features[0].geometry.coordinates;
 
     const userDoc = UserModel({
       firstname,

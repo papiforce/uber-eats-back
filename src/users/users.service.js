@@ -76,7 +76,8 @@ const updateUserProfile = async (req, res) => {
 
     const updatedUser = Object.assign(user, {
       ...req.body,
-      role: req.user.role === "ADMIN" ? req.body.role : user.role,
+      role:
+        req.user.role === "ADMIN" && req.body.role ? req.body.role : user.role,
     });
 
     await updatedUser.save();

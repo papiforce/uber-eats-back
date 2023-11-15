@@ -28,6 +28,11 @@ const mealSchema = new Schema({
     type: String,
     enum: ["MEAL", "DESSERT"],
   },
+  isAvailable: {
+    type: Boolean,
+    required: true,
+    default: false,
+  },
 });
 
 const MealModel = model("Meal", mealSchema);
