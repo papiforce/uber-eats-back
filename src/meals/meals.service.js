@@ -8,7 +8,12 @@ const { logDisplayer } = require("../utils");
 
 const get = async (req, res) => {
   try {
-    const menu = await MealModel.find();
+    const { onlyActive = "true", search } = req.query;
+
+    const menu = await MealModel.find({
+      ...(onlyActive === "true" && { isAvailable: true }),
+      ...(search && { name: { $regex: search, $options: "i" } }),
+    });
 
     logDisplayer("INFO", `GET - ${req.originalUrl} : 200`);
 
