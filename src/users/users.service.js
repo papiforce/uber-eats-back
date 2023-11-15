@@ -17,22 +17,15 @@ const { logDisplayer } = require("../utils");
 
 const get = async (req, res) => {
   try {
-    const {
-      id,
-      onlyActive,
-      search,
-      withoutFounder,
-      limit = 10,
-      page,
-    } = req.query;
+    const { id, onlyActive, search, limit = 10, page } = req.query;
 
     const users = await UserModel.find({
       ...(id && { _id: id }),
       ...(onlyActive && { isDelete: false }),
-      ...(withoutFounder && { roles: { $nin: ["ADMIN"] } }),
       ...(search && {
         $or: [
-          { username: { $regex: search, $options: "i" } },
+          { firstname: { $regex: search, $options: "i" } },
+          { lastname: { $regex: search, $options: "i" } },
           { email: { $regex: search, $options: "i" } },
         ],
       }),
