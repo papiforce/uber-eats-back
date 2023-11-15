@@ -88,4 +88,25 @@ const updateMeal = async (req, res) => {
   }
 };
 
-module.exports = { get, add, updateMeal };
+/**
+ * DELETE - MEal
+ * @return { success: boolean }
+ */
+
+const remove = async (req, res) => {
+  try {
+    const meal = await MealModel.findOneAndDelete(req.params.mealId);
+
+    if (!meal)
+      return res.status(404).json({ error: "Ce produit n'existe pas" });
+
+    logDisplayer("INFO", `GET - ${req.originalUrl} : 200`);
+
+    return res.json({ success: true });
+  } catch (error) {
+    logDisplayer("ERROR", error);
+    return res.status(500).send(error);
+  }
+};
+
+module.exports = { get, add, updateMeal, remove };
