@@ -74,8 +74,7 @@ const get = async (req, res) => {
 
     if (req.user.role === "DELIVERY_PERSON") {
       const orders = await OrderModel.find({
-        deliveryPersonId: req.user._id,
-        ...(status && { status }),
+        status: "FREE",
       });
 
       logDisplayer("INFO", `GET - ${req.originalUrl} : 200`);
@@ -168,10 +167,12 @@ const updateStatusDelivery = async (req, res) => {
     const order = await OrderModel.findById(req.params.orderId);
     const { status, code } = req.body;
 
-    if (status !== "ORDER_PREPARATION" && status !== "DELIVERED")
+    if (status !== "ORDER_PREPARATION" && status !== "DELIVERED"){
+      console.log('test');
       return res
         .status(401)
         .json({ error: "Vous n'êtes pas autorisé à effectuer cette action" });
+    }
 
     if (status === "DELIVERED" && order.code !== code)
       return res.status(404).json({ error: "Le code n'est pas bon" });
