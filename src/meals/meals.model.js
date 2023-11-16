@@ -26,7 +26,12 @@ const mealSchema = new Schema({
   },
   type: {
     type: String,
+    required: true,
     enum: ["MEAL", "DESSERT"],
+  },
+  quantity: {
+    type: Number,
+    required: true,
   },
   isAvailable: {
     type: Boolean,

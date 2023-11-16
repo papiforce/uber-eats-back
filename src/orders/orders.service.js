@@ -1,4 +1,5 @@
 const OrderModel = require("./orders.model");
+const { MealModel } = require("../meals");
 const { logDisplayer } = require("../utils");
 
 /**
@@ -111,6 +112,22 @@ const create = async (req, res) => {
   try {
     const { content, totalPrice } = req.body;
     const user = req.user;
+
+    const meals = await MealModel.find({ _id: content.map((item) => item.id) });
+
+    await Promise.all(content).then((cart) => {
+      meals.forEach(async (item) => {
+        const itemToUpdate = cart.find((subItem) =>
+          item._id.equals(subItem.id)
+        );
+
+        Object.assign(item, {
+          quantity: (item.quantity -= itemToUpdate.quantity),
+        });
+
+        await item.save();
+      });
+    });
 
     const orderDoc = OrderModel({
       content,

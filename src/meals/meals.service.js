@@ -33,7 +33,7 @@ const get = async (req, res) => {
 
 const add = async (req, res) => {
   try {
-    const { name, description, price, photo, time, type } = req.body;
+    const { name, description, price, photo, time, type, quantity } = req.body;
 
     const meal = await MealModel.findOne({ name: name });
 
@@ -48,6 +48,7 @@ const add = async (req, res) => {
       photo,
       time,
       type,
+      quantity,
     });
 
     await mealDoc.save();
