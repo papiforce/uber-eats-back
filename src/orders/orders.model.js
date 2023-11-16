@@ -9,7 +9,7 @@ const orderSchema = new Schema(
       required: true,
     },
     address: {
-      type: String,
+      type: { address: String, coordonates: { lat: Number, long: Number } },
       required: true,
     },
     deliveryPersonId: {

@@ -14,45 +14,46 @@ const { logDisplayer } = require("../utils");
  * @return Orders[] | []
  */
 
+const getlatest = async (req, res) => {
+  try {
+    const {
+      customerId,
+      deliveryPersonId,
+      status,
+      limit = 10,
+      page = 1,
+    } = req.query;
 
-  const getlatest = async (req, res) => {
-    try {
-      const {
-        customerId,
-        deliveryPersonId,
-        status,
-        limit = 10,
-        page = 1,
-      } = req.query;
-  
-      if (req.user.role === "MEMBER") {
-        const orders = await OrderModel
-        .find({ customerId: req.user._id, ...(status && { status })})
-        .sort({createdAt: -1})
-        .limit(1);
-        logDisplayer("INFO", `GET - ${req.originalUrl} : 200`);
-        return res.json({
-          orders:orders, success:true,
-        });
-      }
-  
-  
+    if (req.user.role === "MEMBER") {
       const orders = await OrderModel.find({
-        ...(customerId && { customerId }),
-        ...(deliveryPersonId && { deliveryPersonId }),
+        customerId: req.user._id,
         ...(status && { status }),
       })
-        .limit(limit)
-        .skip(limit * page);
-  
+        .sort({ createdAt: -1 })
+        .limit(1);
       logDisplayer("INFO", `GET - ${req.originalUrl} : 200`);
-  
-      return res.json(orders);
-    } catch (error) {
-      logDisplayer("ERROR", error);
-      return res.status(500).send(error);
+      return res.json({
+        orders: orders,
+        success: true,
+      });
     }
-  };
+
+    const orders = await OrderModel.find({
+      ...(customerId && { customerId }),
+      ...(deliveryPersonId && { deliveryPersonId }),
+      ...(status && { status }),
+    })
+      .limit(limit)
+      .skip(limit * page);
+
+    logDisplayer("INFO", `GET - ${req.originalUrl} : 200`);
+
+    return res.json(orders);
+  } catch (error) {
+    logDisplayer("ERROR", error);
+    return res.status(500).send(error);
+  }
+};
 
 const get = async (req, res) => {
   try {
@@ -114,7 +115,7 @@ const create = async (req, res) => {
     const orderDoc = OrderModel({
       content,
       totalPrice,
-      address: user.address.address,
+      address: user.address,
       customerId: user._id,
       code: ("000" + Math.floor(Math.random() * 1000)).slice(-4),
     });
