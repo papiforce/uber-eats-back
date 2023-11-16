@@ -1,6 +1,7 @@
 const router = require("express").Router();
 const {
   get,
+  getlatest,
   create,
   cancel,
   updateStatusDelivery,
@@ -9,6 +10,7 @@ const {
 const { isLogged, hasRole } = require("../middlewares");
 
 router.get("/", isLogged, get);
+router.get("/latest", isLogged, getlatest);
 router.post("/add", isLogged, create);
 router.put("/cancel/:orderId", isLogged, hasRole("MEMBER"), cancel);
 router.put(

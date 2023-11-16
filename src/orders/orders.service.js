@@ -14,6 +14,46 @@ const { logDisplayer } = require("../utils");
  * @return Orders[] | []
  */
 
+
+  const getlatest = async (req, res) => {
+    try {
+      const {
+        customerId,
+        deliveryPersonId,
+        status,
+        limit = 10,
+        page = 1,
+      } = req.query;
+  
+      if (req.user.role === "MEMBER") {
+        const orders = await OrderModel
+        .find({ customerId: req.user._id, ...(status && { status })})
+        .sort({createdAt: -1})
+        .limit(1);
+        logDisplayer("INFO", `GET - ${req.originalUrl} : 200`);
+        return res.json({
+          orders:orders, success:true,
+        });
+      }
+  
+  
+      const orders = await OrderModel.find({
+        ...(customerId && { customerId }),
+        ...(deliveryPersonId && { deliveryPersonId }),
+        ...(status && { status }),
+      })
+        .limit(limit)
+        .skip(limit * page);
+  
+      logDisplayer("INFO", `GET - ${req.originalUrl} : 200`);
+  
+      return res.json(orders);
+    } catch (error) {
+      logDisplayer("ERROR", error);
+      return res.status(500).send(error);
+    }
+  };
+
 const get = async (req, res) => {
   try {
     const {
@@ -29,10 +69,6 @@ const get = async (req, res) => {
         customerId: req.user._id,
         ...(status && { status }),
       });
-
-      logDisplayer("INFO", `GET - ${req.originalUrl} : 200`);
-
-      return res.json(orders);
     }
 
     if (req.user.role === "DELIVERY_PERSON") {
@@ -182,6 +218,7 @@ const updateStatusAdmin = async (req, res) => {
 
 module.exports = {
   get,
+  getlatest,
   create,
   updateStatusDelivery,
   updateStatusAdmin,
