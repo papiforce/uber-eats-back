@@ -71,6 +71,8 @@ const get = async (req, res) => {
         customerId: req.user._id,
         ...(status && { status }),
       });
+
+      return res.json(orders);
     }
 
     if (req.user.role === "DELIVERY_PERSON") {
