@@ -17,35 +17,11 @@ const { logDisplayer } = require("../utils");
 
 const getlatest = async (req, res) => {
   try {
-    const {
-      customerId,
-      deliveryPersonId,
-      status,
-      limit = 10,
-      page = 1,
-    } = req.query;
-
-    if (req.user.role === "MEMBER") {
-      const orders = await OrderModel.find({
-        customerId: req.user._id,
-        ...(status && { status }),
-      })
-        .sort({ createdAt: -1 })
-        .limit(1);
-      logDisplayer("INFO", `GET - ${req.originalUrl} : 200`);
-      return res.json({
-        orders: orders,
-        success: true,
-      });
-    }
-
     const orders = await OrderModel.find({
-      ...(customerId && { customerId }),
-      ...(deliveryPersonId && { deliveryPersonId }),
-      ...(status && { status }),
+      customerId: req.user._id,
     })
-      .limit(limit)
-      .skip(limit * page);
+      .sort({ createdAt: -1 })
+      .limit(1);
 
     logDisplayer("INFO", `GET - ${req.originalUrl} : 200`);
 
