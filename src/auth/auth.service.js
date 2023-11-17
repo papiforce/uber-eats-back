@@ -19,7 +19,7 @@ const signUp = async (req, res) => {
 
     if (userByEmail) {
       return res
-        .status(404)
+        .status(403)
         .json({ error: "Cette adresse mail est déjà prise" });
     }
 
@@ -30,7 +30,7 @@ const signUp = async (req, res) => {
       "https://api-adresse.data.gouv.fr/search/",
       {
         params: {
-          q: address.address,
+          q: address,
         },
       }
     );
@@ -57,6 +57,7 @@ const signUp = async (req, res) => {
 
     return res.json({ success: true });
   } catch (error) {
+    console.log(error, ` <== error`);
     logDisplayer("ERROR", `(POST) ${req.originalUrl} : 500`);
     return res.status(500).send(error);
   }

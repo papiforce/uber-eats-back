@@ -62,9 +62,21 @@ const updateUserProfile = async (req, res) => {
     if (!user)
       return res.status(404).json({ error: "Cet utilisateur n'existe pas" });
 
-    const checkEmail = await UserModel.findOne({ email: user.email });
+    const checkEmail = await UserModel.findOne({ email: req.body.email });
 
-    if (checkEmail && req.user.email !== user.email) {
+    if (
+      req.user.role === "ADMIN" &&
+      checkEmail &&
+      req.body.email !== user.email
+    ) {
+      return res.status(403).json({ error: "Cette email est déjà utilisée" });
+    }
+
+    if (
+      req.user.role !== "ADMIN" &&
+      checkEmail &&
+      req.body.email !== user.email
+    ) {
       return res.status(403).json({ error: "Cette email est déjà utilisée" });
     }
 
@@ -98,6 +110,7 @@ const updateUserProfile = async (req, res) => {
 
     return res.json(updatedUser);
   } catch (error) {
+    console.log("HERE");
     logDisplayer("ERROR", error);
     return res.status(500).send(error);
   }
