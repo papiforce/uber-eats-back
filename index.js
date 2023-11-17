@@ -8,7 +8,7 @@ const routes = require("./src/routes");
 
 const app = express();
 
-const whiteList = ["URL PROD HERE"];
+const whiteList = ["https://uber-eats-nu.vercel.app"];
 
 const corsOptions = {
   origin: function (origin, callback) {
