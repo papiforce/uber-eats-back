@@ -80,9 +80,13 @@ const get = async (req, res) => {
         status: "FREE",
       });
 
+      const deliveryPersonOrders = await OrderModel.find({
+        deliveryPersonId: req.user._id,
+      });
+
       logDisplayer("INFO", `GET - ${req.originalUrl} : 200`);
 
-      return res.json(orders);
+      return res.json(orders.concat(deliveryPersonOrders));
     }
 
     const orders = await OrderModel.find({
@@ -186,8 +190,8 @@ const updateStatusDelivery = async (req, res) => {
     const order = await OrderModel.findById(req.params.orderId);
     const { status, code } = req.body;
 
-    if (status !== "ORDER_PREPARATION" && status !== "DELIVERED"){
-      console.log('test');
+    if (status !== "ORDER_PREPARATION" && status !== "DELIVERED") {
+      console.log("test");
       return res
         .status(401)
         .json({ error: "Vous n'êtes pas autorisé à effectuer cette action" });
