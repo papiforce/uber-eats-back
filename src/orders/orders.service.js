@@ -34,13 +34,7 @@ const getlatest = async (req, res) => {
 
 const get = async (req, res) => {
   try {
-    const {
-      customerId,
-      deliveryPersonId,
-      status,
-      limit = 10,
-      page = 1,
-    } = req.query;
+    const { customerId, deliveryPersonId, status } = req.query;
 
     if (req.user.role === "MEMBER") {
       const orders = await OrderModel.find({
@@ -50,7 +44,13 @@ const get = async (req, res) => {
         .populate("customerId")
         .populate("deliveryPersonId");
 
-      return res.json(orders);
+      return res.json({
+        free: orders.filter((item) => item.status === "FREE"),
+        pending: orders.filter(
+          (item) => item.status !== "FREE" && item.status !== "DELIVERED"
+        ),
+        finish: orders.filter((item) => item.status === "DELIVERED"),
+      });
     }
 
     if (req.user.role === "DELIVERY_PERSON") {
@@ -83,13 +83,17 @@ const get = async (req, res) => {
       ...(status && { status }),
     })
       .populate("customerId")
-      .populate("deliveryPersonId")
-      .limit(limit)
-      .skip(limit * page);
+      .populate("deliveryPersonId");
 
     logDisplayer("INFO", `GET - ${req.originalUrl} : 200`);
 
-    return res.json(orders);
+    return res.json({
+      free: orders.filter((item) => item.status === "FREE"),
+      pending: orders.filter(
+        (item) => item.status !== "FREE" && item.status !== "DELIVERED"
+      ),
+      finish: orders.filter((item) => item.status === "DELIVERED"),
+    });
   } catch (error) {
     logDisplayer("ERROR", error);
     return res.status(500).send(error);
@@ -100,7 +104,7 @@ const get = async (req, res) => {
  * POST - create a new order
  * @param { content: Meal[], totalPrice: number }
  *
- * @return { success: boolean }
+ * @return { Meal }
  */
 
 const create = async (req, res) => {
@@ -136,7 +140,7 @@ const create = async (req, res) => {
 
     logDisplayer("INFO", `GET - ${req.originalUrl} : 200`);
 
-    return res.json({ success: true });
+    return res.json(orderDoc);
   } catch (error) {
     logDisplayer("ERROR", error);
     return res.status(500).send(error);
