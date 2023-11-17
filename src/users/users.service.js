@@ -67,10 +67,28 @@ const updateUserProfile = async (req, res) => {
       return res.status(403).json({ error: "Cette email est déjà utilisée" });
     }
 
+    const getcoordinates = await axios.get(
+      "https://api-adresse.data.gouv.fr/search/",
+      {
+        params: {
+          q: req.body.address,
+        },
+      }
+    );
+
+    const coordinates = getcoordinates.data.features[0].geometry.coordinates;
+
     const updatedUser = Object.assign(user, {
       ...req.body,
       role:
         req.user.role === "ADMIN" && req.body.role ? req.body.role : user.role,
+      address: {
+        address: req.body.address,
+        coordonates: {
+          lat: coordinates[1],
+          long: coordinates[0],
+        },
+      },
     });
 
     await updatedUser.save();
