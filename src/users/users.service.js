@@ -1,5 +1,6 @@
 const UserModel = require("./users.model");
 const { logDisplayer } = require("../utils");
+const axios = require("axios");
 
 /**
  * GET - Users list
