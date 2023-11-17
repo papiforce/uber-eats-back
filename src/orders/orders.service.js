@@ -17,7 +17,7 @@ const { logDisplayer } = require("../utils");
 
 const getlatest = async (req, res) => {
   try {
-    const orders = await OrderModel.find({
+    const order = await OrderModel.find({
       customerId: req.user._id,
     })
       .sort({ createdAt: -1 })
@@ -25,7 +25,7 @@ const getlatest = async (req, res) => {
 
     logDisplayer("INFO", `GET - ${req.originalUrl} : 200`);
 
-    return res.json(orders);
+    return res.json(order[0]);
   } catch (error) {
     logDisplayer("ERROR", error);
     return res.status(500).send(error);
@@ -46,7 +46,9 @@ const get = async (req, res) => {
       const orders = await OrderModel.find({
         customerId: req.user._id,
         ...(status && { status }),
-      });
+      })
+        .populate("customerId")
+        .populate("deliveryPersonId");
 
       return res.json(orders);
     }
@@ -58,7 +60,9 @@ const get = async (req, res) => {
 
       const deliveryPersonOrders = await OrderModel.find({
         deliveryPersonId: req.user._id,
-      });
+      })
+        .populate("customerId")
+        .populate("deliveryPersonId");
 
       logDisplayer("INFO", `GET - ${req.originalUrl} : 200`);
 
@@ -70,6 +74,8 @@ const get = async (req, res) => {
       ...(deliveryPersonId && { deliveryPersonId }),
       ...(status && { status }),
     })
+      .populate("customerId")
+      .populate("deliveryPersonId")
       .limit(limit)
       .skip(limit * page);
 
