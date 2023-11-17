@@ -78,11 +78,11 @@ const signIn = async (req, res) => {
       .exec();
 
     if (!user) {
-      return res.status(404).json({ error: "Identifiants incorrects" });
+      return res.status(401).json({ error: "Identifiants incorrects" });
     }
 
     if (!(await bcrypt.compare(req.body.password, user.password))) {
-      return res.status(404).json({ error: "Identifiants incorrects" });
+      return res.status(401).json({ error: "Identifiants incorrects" });
     }
 
     const token = jwt.sign({ user: user._id }, process.env.TOKEN_KEY);

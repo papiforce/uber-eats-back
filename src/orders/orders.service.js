@@ -66,7 +66,15 @@ const get = async (req, res) => {
 
       logDisplayer("INFO", `GET - ${req.originalUrl} : 200`);
 
-      return res.json(orders.concat(deliveryPersonOrders));
+      return res.json({
+        free: orders,
+        pending: deliveryPersonOrders.filter(
+          (item) => item.status !== "FREE" && item.status !== "DELIVERED"
+        ),
+        finish: deliveryPersonOrders.filter(
+          (item) => item.status === "DELIVERED"
+        ),
+      });
     }
 
     const orders = await OrderModel.find({
